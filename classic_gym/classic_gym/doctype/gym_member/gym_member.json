@@ -1,0 +1,287 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{email}",
+ "creation": "2024-02-19 09:58:40.682952",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "personal_details_section",
+  "email",
+  "full_name",
+  "age",
+  "gender",
+  "column_break_ftenz",
+  "contact",
+  "emergency_contact",
+  "date_joined",
+  "column_break_w0prn",
+  "membership_type",
+  "days_remaining",
+  "column_break_n1zka",
+  "gym_membership_date",
+  "locker_section",
+  "locker",
+  "workout_plan_and_trainer_section",
+  "gym_plan",
+  "available_plans",
+  "column_break_nvbpz",
+  "subscribed_workout",
+  "trainer",
+  "cardio_machine_tab",
+  "cardio_machine",
+  "costs_section",
+  "membership_cost",
+  "subscribed_work_out_cost",
+  "column_break_4boc6",
+  "locker_charges",
+  "price_total",
+  "weight_section",
+  "weight",
+  "column_break_d4zpq",
+  "calorie_intake",
+  "medical_section",
+  "trainer_raitings",
+  "column_break_m3wqk",
+  "medical_history"
+ ],
+ "fields": [
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Full Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Age",
+   "reqd": 1
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Table",
+   "label": "Weight",
+   "options": "Gym Member Weight"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Gender",
+   "options": "\nMale\nFemale\nRather Not Say",
+   "reqd": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "contact",
+   "fieldtype": "Phone",
+   "label": "Contact"
+  },
+  {
+   "fieldname": "emergency_contact",
+   "fieldtype": "Phone",
+   "label": "Emergency Contact"
+  },
+  {
+   "fieldname": "column_break_w0prn",
+   "fieldtype": "Tab Break",
+   "label": "GYM MEMBERSHIP"
+  },
+  {
+   "fieldname": "date_joined",
+   "fieldtype": "Date",
+   "label": "Date Joined"
+  },
+  {
+   "depends_on": "eval:doc.gym_membership_date!=null && doc.membership_type!=null;",
+   "fieldname": "days_remaining",
+   "fieldtype": "Int",
+   "label": "Days Remaining"
+  },
+  {
+   "fieldname": "subscribed_workout",
+   "fieldtype": "Link",
+   "label": "Subscribed Workout",
+   "options": "Gym Work Out Plans"
+  },
+  {
+   "fieldname": "medical_history",
+   "fieldtype": "Table",
+   "label": "Medical History",
+   "options": "Gym Medical History"
+  },
+  {
+   "fieldname": "weight_section",
+   "fieldtype": "Tab Break",
+   "label": "UTILITIES"
+  },
+  {
+   "depends_on": "eval:doc.subscribed_workout!=null",
+   "fieldname": "trainer",
+   "fieldtype": "Data",
+   "label": "Trainer"
+  },
+  {
+   "fieldname": "costs_section",
+   "fieldtype": "Tab Break",
+   "label": "COSTS"
+  },
+  {
+   "fieldname": "membership_cost",
+   "fieldtype": "Data",
+   "label": "Membership Cost"
+  },
+  {
+   "fieldname": "subscribed_work_out_cost",
+   "fieldtype": "Data",
+   "label": "Subscribed Work Out Cost"
+  },
+  {
+   "fieldname": "price_total",
+   "fieldtype": "Data",
+   "label": "Price Total"
+  },
+  {
+   "fieldname": "column_break_4boc6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "personal_details_section",
+   "fieldtype": "Tab Break",
+   "label": "PERSONAL DETAILS"
+  },
+  {
+   "fieldname": "column_break_ftenz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.membership_type;",
+   "fieldname": "gym_membership_date",
+   "fieldtype": "Date",
+   "label": "Gym Membership Date"
+  },
+  {
+   "fieldname": "locker_section",
+   "fieldtype": "Tab Break",
+   "label": "LOCKER"
+  },
+  {
+   "fieldname": "workout_plan_and_trainer_section",
+   "fieldtype": "Tab Break",
+   "label": "Workout Plan and Trainer"
+  },
+  {
+   "fieldname": "column_break_n1zka",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "membership_type",
+   "fieldtype": "Link",
+   "label": "Membership_type",
+   "options": "Gym Membership"
+  },
+  {
+   "fieldname": "locker",
+   "fieldtype": "Table",
+   "label": "Locker",
+   "options": "Gym Locker Booking"
+  },
+  {
+   "fieldname": "locker_charges",
+   "fieldtype": "Data",
+   "label": "Locker Charges"
+  },
+  {
+   "fieldname": "gym_plan",
+   "fieldtype": "Link",
+   "label": "Gym Plan",
+   "options": "Gym Plans"
+  },
+  {
+   "fieldname": "available_plans",
+   "fieldtype": "Small Text",
+   "label": "Available Plans",
+   "print_width": "7",
+   "width": "7"
+  },
+  {
+   "fieldname": "column_break_nvbpz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cardio_machine_tab",
+   "fieldtype": "Tab Break",
+   "label": "CARDIO MACHINE"
+  },
+  {
+   "fieldname": "cardio_machine",
+   "fieldtype": "Table",
+   "label": "Cardio Machine",
+   "options": "Cardio Machine Booking"
+  },
+  {
+   "fieldname": "column_break_d4zpq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "calorie_intake",
+   "fieldtype": "Table",
+   "label": "Calorie Intake",
+   "options": "Calorie Intake"
+  },
+  {
+   "fieldname": "medical_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "trainer_raitings",
+   "fieldtype": "Table",
+   "label": "Trainer Raitings",
+   "options": "Trainer Ratings"
+  },
+  {
+   "fieldname": "column_break_m3wqk",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-02-27 19:31:51.049667",
+ "modified_by": "Administrator",
+ "module": "Classic Gym",
+ "name": "Gym Member",
+ "name_case": "Title Case",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "route": "classicgym",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1
+}
