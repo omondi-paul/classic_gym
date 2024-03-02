@@ -4,7 +4,7 @@
 frappe.ui.form.on('Gym Cardio Machines', {
 	refresh: function(frm) {
 		frappe.call({
-            method: 'classic_gym.services.rest.machineAvailabilityUpdate',
+            method: 'classic_gym.services.rest.machineAvailabilityReset',
             args: {
 
             },

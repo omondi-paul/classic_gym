@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{member_email}-{#########}",
+ "autoname": "format:{member_email} {date}",
  "creation": "2024-02-24 15:25:59.332479",
  "default_view": "List",
  "doctype": "DocType",
@@ -14,18 +14,16 @@
  ],
  "fields": [
   {
+   "depends_on": "eval:doc.weight!=null",
    "fieldname": "member_email",
    "fieldtype": "Link",
    "label": "Member_email",
    "options": "Gym Member"
   },
   {
+   "depends_on": "eval:doc.weight!=null",
    "fieldname": "date",
    "fieldtype": "Datetime",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_preview": 1,
-   "in_standard_filter": 1,
    "label": "Date"
   },
   {
@@ -35,13 +33,14 @@
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Weight"
+   "label": "Weight",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-02-27 19:37:48.597210",
+ "modified": "2024-03-02 16:11:24.969007",
  "modified_by": "Administrator",
  "module": "Classic Gym",
  "name": "Gym Member Weight",

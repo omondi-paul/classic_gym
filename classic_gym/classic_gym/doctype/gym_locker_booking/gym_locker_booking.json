@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{locker_number}",
+ "autoname": "format:{locker_number}-{##}",
  "creation": "2024-02-22 10:38:40.489005",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -110,7 +110,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-02-27 17:02:28.608289",
+ "modified": "2024-02-28 14:10:18.152337",
  "modified_by": "Administrator",
  "module": "Classic Gym",
  "name": "Gym Locker Booking",

@@ -11,6 +11,7 @@
   "personal_details_section",
   "email",
   "full_name",
+  "date_of_birth",
   "age",
   "gender",
   "column_break_ftenz",
@@ -30,6 +31,8 @@
   "column_break_nvbpz",
   "subscribed_workout",
   "trainer",
+  "group_classes_section",
+  "group_class",
   "cardio_machine_tab",
   "cardio_machine",
   "costs_section",
@@ -43,7 +46,7 @@
   "column_break_d4zpq",
   "calorie_intake",
   "medical_section",
-  "trainer_raitings",
+  "trainer_ratings",
   "column_break_m3wqk",
   "medical_history"
  ],
@@ -56,11 +59,12 @@
    "reqd": 1
   },
   {
+   "depends_on": "eval:doc.date_of_birth!=null",
    "fieldname": "age",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Age",
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "weight",
@@ -245,19 +249,35 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "trainer_raitings",
+   "fieldname": "column_break_m3wqk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "trainer_ratings",
    "fieldtype": "Table",
-   "label": "Trainer Raitings",
+   "label": "Trainer Ratings",
    "options": "Trainer Ratings"
   },
   {
-   "fieldname": "column_break_m3wqk",
-   "fieldtype": "Column Break"
+   "fieldname": "group_classes_section",
+   "fieldtype": "Section Break",
+   "label": "Group Classes"
+  },
+  {
+   "fieldname": "group_class",
+   "fieldtype": "Table",
+   "label": "Group Class",
+   "options": "Group Class Booking"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-02-27 19:31:51.049667",
+ "modified": "2024-03-02 18:08:31.064116",
  "modified_by": "Administrator",
  "module": "Classic Gym",
  "name": "Gym Member",

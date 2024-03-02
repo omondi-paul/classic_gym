@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{machine_name}",
+ "autoname": "format:{machine_name}-{###}",
  "creation": "2024-02-27 16:55:31.481656",
  "default_view": "List",
  "doctype": "DocType",
@@ -10,8 +10,9 @@
  "field_order": [
   "machine_name",
   "email",
+  "column_break_ketkv",
   "start_time",
-  "end_time"
+  "stop_time"
  ],
  "fields": [
   {
@@ -31,28 +32,36 @@
    "label": "Email"
   },
   {
+   "depends_on": "eval:doc.machine_name!=null",
    "fieldname": "start_time",
    "fieldtype": "Datetime",
    "in_filter": 1,
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Start Time"
+   "label": "Start Time",
+   "mandatory_depends_on": "eval:doc.machine_name!=null"
   },
   {
-   "fieldname": "end_time",
+   "fieldname": "column_break_ketkv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.machine_name!=null",
+   "fieldname": "stop_time",
    "fieldtype": "Datetime",
    "in_filter": 1,
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "End Time"
+   "label": "Stop Time",
+   "mandatory_depends_on": "eval:doc.machine_name!=null"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-02-27 17:40:50.533983",
+ "modified": "2024-02-28 12:56:26.878158",
  "modified_by": "Administrator",
  "module": "Classic Gym",
  "name": "Cardio Machine Booking",

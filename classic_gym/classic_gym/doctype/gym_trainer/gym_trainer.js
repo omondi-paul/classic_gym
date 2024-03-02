@@ -4,7 +4,7 @@
 frappe.ui.form.on('Gym Trainer', {
 	refresh: function(frm) {
 		let trainer=frm.doc.full_name
-		console.log(trainer)
+		// console.log(trainer)
 		frappe.call({
             method: 'classic_gym.services.rest.totalRating',
             args: {

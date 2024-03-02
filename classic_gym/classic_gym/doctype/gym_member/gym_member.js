@@ -36,6 +36,26 @@ frappe.ui.form.on('Gym Member', {
             }
         });
     },
+    validate: function (frm) {
+        let dateOfBirth=frm.doc.date_of_birth;
+        frappe.call({
+            method: 'classic_gym.services.rest.calculate_age',
+            args: {
+                "dateOfBirth":dateOfBirth
+            },
+            callback: function (r) {
+                if (r.message >=0) {
+                  frm.set_value('age',r.message)
+                 
+                }
+                if (r.message <0){
+                    frappe.msgprint('Invalid Date of Birth.');
+                    frappe.validate = false;
+
+                }
+            }
+        });
+    },
     gym_membership_date: function (frm) {
         let membership = frm.doc.membership_type;
         let membership_date = frm.doc.gym_membership_date
@@ -94,44 +114,12 @@ frappe.ui.form.on('Gym Member', {
             }
         });
     },
-    validate: function (frm) {
-        let email = frm.doc.email;
-
-
-        frappe.call({
-            method: 'classic_gym.services.rest.availabilityUpdate',
-            args: {
-
-                "occupant": email
-
-            },
-            callback: function (r) {
-
-            }
-        });
-        frappe.call({
-            method: 'classic_gym.services.rest.lockerCharges',
-            args: {
-                "email": email
-            },
-            callback: function (r) {
-                console.log(r); // Log the response for debugging
-                if (r.message) {
-                    frm.set_value('locker_charges', r.message);
-                } else {
-                    frm.set_value('locker_charges', 0.0); // Setting default value to 0
-                }
-            },
-            error: function(err) {
-                console.error("Error occurred during frappe.call:", err);
-              
-            }
-        });
+   
        
 
         
         
-    },
+    
     gym_plan: function (frm) {
         let parent = frm.doc.gym_plan;
         frappe.call({
@@ -170,12 +158,30 @@ frappe.ui.form.on('Gym Member', {
                     }
                 },
                 error: function (err) {
-                    console.error("Error calling totalCharges function:", err);
+                //    console.error("Error calling totalCharges function:", err);
                 }
             });
+            frappe.call({
+                method: 'classic_gym.services.rest.machineAvailabilityReset',
+                args: {
+    
+                },
+                callback: function (r) {
+                    
+                },               
+            });
+            frappe.call({
+                method: 'classic_gym.services.rest.availabilityReset',
+                args: {
+    
+                },
+                callback: function (r) {
+                    console.log(r.message)
+                    
+                },
+               
+            });
             
-            
-
         },
     });
         
@@ -189,7 +195,7 @@ frappe.ui.form.on('Gym Locker Booking', {
     locker_number(frm, cdt, cdn) {
         let item = locals[cdt][cdn];
         let email = frm.doc.email;
-        let locker_number=item.locker_number
+        let locker_number=item.locker_number || 0;
      
         frappe.call({
             method: 'classic_gym.services.rest.booking',
@@ -223,9 +229,42 @@ frappe.ui.form.on('Gym Locker Booking', {
                 }
             }
         });
+
     },
-   
-  
+
+    validate: function (frm) {
+        let email = frm.doc.email;
+
+
+        frappe.call({
+            method: 'classic_gym.services.rest.availabilityUpdate',
+            args: {
+
+                "occupant": email
+
+            },
+            callback: function (r) {
+            }
+        });
+        frappe.call({
+            method: 'classic_gym.services.rest.lockerCharges',
+            args: {
+                "email": email
+            },
+            callback: function (r) {
+                console.log(r); // Log the response for debugging
+                if (r.message) {
+                    frm.set_value('locker_charges', r.message);
+                } else {
+                    frm.set_value('locker_charges', 0.0); // Setting default value to 0
+                }
+            },
+            error: function(err) {
+                console.error("Error occurred during frappe.call:", err);
+              
+            }
+        });
+    },
     
     number_of_days(frm, cdt, cdn) {
         let item = locals[cdt][cdn];
@@ -254,9 +293,10 @@ frappe.ui.form.on('Gym Locker Booking', {
             }
         });
     },
+
     end_time(frm, cdt, cdn) {
         let item = locals[cdt][cdn];
-        let startTime = item.start_time;
+        let startTime = item.start_time ;
         let endTime = item.end_time
 
         frappe.call({
@@ -274,7 +314,7 @@ frappe.ui.form.on('Gym Locker Booking', {
                     });
                 }
                 else {
-                    frappe.msgprint("Error calculating total hours and price");
+                   
                 }
             }
         });
@@ -325,62 +365,101 @@ frappe.ui.form.on('Cardio Machine Booking', {
                 }
             }
         });
-    },
-   
-  
-    
-//     number_of_days(frm, cdt, cdn) {
-//         let item = locals[cdt][cdn];
-//         let startDate = item.book_date;
-//         let number_of_days = item.number_of_days;
+    }, 
+    validate: function (frm) {
+        let email = frm.doc.email;
+        frappe.call({
+            method: 'classic_gym.services.rest.machineAvailabity',
+            args: {
 
-//         frappe.call({
-//             method: 'classic_gym.services.rest.endDate',
-//             args: {
-//                 "startDate_str": startDate,
-//                 "number_of_days": number_of_days,
-//             },
-//             callback: function (r) {
-//                 if (r.message) {
-//                     frappe.model.set_value(cdt, cdn, {
-//                         book_end_date: r.message[0]
-//                     });
-//                     frappe.model.set_value(cdt, cdn, {
-//                         total_price: r.message[1]
-//                     });
+                "email": email
 
-//                 }
-//                 else {
-//                     frappe.msgprint("Error calculating end date");
-//                 }
-//             }
-//         });
-//     },
-//     end_time(frm, cdt, cdn) {
-//         let item = locals[cdt][cdn];
-//         let startTime = item.start_time;
-//         let endTime = item.end_time
+            },
+            callback: function (r) {
+                console.log(r.message)
 
-//         frappe.call({
-//             method: 'classic_gym.services.rest.totalHours',
-//             args: {
-//                 "start_time_str": startTime,
-//                 "end_time_str": endTime,
-//             },
-//             callback: function (r) {
-//                 if (r.message) {
-//                     console.log(r.message)
-//                     frappe.model.set_value(cdt, cdn, {
-//                         number__of_hours: r.message[0],
-//                         total_price: r.message[1],
-//                     });
-//                 }
-//                 else {
-//                     frappe.msgprint("Error calculating total hours and price");
-//                 }
-//             }
-//         });
-
-
-    // },
+            } 
+        });
+    }   
 });
+
+
+
+
+frappe.ui.form.on('Trainer Ratings', {
+        trainer_name(frm, cdt, cdn) {
+            let item = locals[cdt][cdn];
+            let email = frm.doc.email;
+         
+            frappe.call({
+                method: 'classic_gym.services.rest.booking',
+                args: {
+                    "email": email,
+                    // "name": name,
+                },
+                callback: function (r) {
+                    if (r.message) {
+                        frappe.model.set_value(cdt, cdn, {
+                            member: r.message,
+                        });
+                        
+                    }
+                }
+            });
+         
+      
+    },
+});
+
+
+frappe.ui.form.on('Group Class Booking', {
+    class_name(frm, cdt, cdn) {
+        let item = locals[cdt][cdn];
+        let email = frm.doc.email;
+     
+        frappe.call({
+            method: 'classic_gym.services.rest.booking',
+            args: {
+                "email": email,
+              
+            },
+            callback: function (r) {
+                if (r.message) {
+                    frappe.model.set_value(cdt, cdn, {
+                        member_email: r.message,
+                    });
+                    // frappe.model.set_value(cdt,cdn,{
+                    //     member:r.message[1],
+                    // });
+                }
+            }
+        });
+
+    
+    },
+});
+
+
+frappe.ui.form.on('Gym Member Weight', {
+    weight(frm, cdt, cdn) {
+        let item = locals[cdt][cdn];
+        let email = frm.doc.email;
+     
+        frappe.call({
+            method: 'classic_gym.services.rest.weight',
+            args: {
+                "email": email,
+              
+            },
+            callback: function (r) {
+                if (r.message) {
+                    frappe.model.set_value(cdt, cdn, {
+                        member_email: r.message[0],
+                        date: r.message[1]
+                    });
+                }
+            }
+        });
+    },
+});
+
