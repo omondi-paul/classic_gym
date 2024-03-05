@@ -1,5 +1,5 @@
 import frappe
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta,time
 from frappe.utils import now, getdate
 
 
@@ -183,74 +183,6 @@ def check_locker_number(locker_number):
 
 
 
-@frappe.whitelist(allow_guest=True)
-def availabilityUpdate(occupant):
-    email=occupant
-    details=frappe.db.get_all('Gym Locker Booking',{'parent':occupant,},{'book_date','start_time','book_end_date','end_time','locker_number'})
-
-    for detail in details:
-        name=detail.locker_number
-        book_date=detail.book_date if detail.book_date else None
-        if book_date:
-            book_date = datetime.strptime(str(book_date), '%Y-%m-%d').date()
-            book_date = datetime.combine(book_date, datetime.min.time())
-        start=detail.start_time if detail.start_time else None
-        start_time=book_date if book_date else start
-        book_end_date=detail.book_end_date if detail.book_end_date else None
-
-        if book_end_date:
-            book_end_date = datetime.strptime(str(book_end_date), '%Y-%m-%d').date()
-            book_end_date = datetime.combine(book_end_date, datetime.min.time())
-        end_time=detail.end_time if detail.end_time else None
-        stop_time=book_end_date if book_end_date else end_time
-        today = datetime.now()
-        future = ( stop_time-today).total_seconds() if stop_time else float('inf')
-        past  = (start_time-today).total_seconds()  if start_time else float('inf')
-
-        if future >0 and past <0:
-            query = f"""
-                UPDATE `tabGym Lockers`
-                SET status = 'Occupied',
-                next_available_date="{stop_time}",
-                occupant="{occupant}"
-                WHERE name = "{name}";
-            """
-
-            frappe.db.sql(query)
-    frappe.db.commit()
-    return 
-
-
-
-
-
-@frappe.whitelist(allow_guest=True)
-def availabilityReset():
-    lockers = frappe.get_all('Gym Lockers',{},{'name', 'status', 'occupant', 'next_available_date'})
-    for locker in lockers:
-        name = locker.name
-        exists = frappe.db.exists('Gym Locker Booking', {'locker_number': name})
-        today = datetime.now()
-        if locker.next_available_date:
-            locker.next_available_date=datetime.strptime(locker.next_available_date,'%Y-%m-%d %H:%M:%S')
-            future = (locker.next_available_date-today).total_seconds() 
-        else:
-            future=0
-        if not exists or future<0:
-            
-            query = f"""
-                UPDATE `tabGym Lockers`
-                SET status = 'Available',
-                    occupant=NULL,
-                next_available_date=NULL
-                WHERE name = "{name}";
-            """
-
-            frappe.db.sql(query)        
-    frappe.db.commit()
-    return 'success'
-
-
 
 
 
@@ -367,68 +299,40 @@ def check_machine_name(machine_name):
     return exists
 
 
-
-@frappe.whitelist(allow_guest=True)
-def machineAvailabity(email):
-    machines=frappe.db.get_all('Cardio Machine Booking',{'parent':email},{'start_time','stop_time','machine_name'})
-
-    for machine in machines:
-        machine_name = machine.machine_name
-        start_time = machine.start_time if machine.start_time else None
-        stop_time = machine.stop_time if machine.stop_time else None
-
-        today = datetime.now()
-        future = (stop_time -today).total_seconds() 
-        past  = (start_time-today).total_seconds()
-
-        if future >0 and past < 0:
-            query = f"""
-                UPDATE `tabGym Cardio Machines`
-                SET current_status = 'In Use',
-                next_available_time =" {stop_time}",
-                assigned_user = "{email}"
-                WHERE machine_name = "{machine_name}";
-            """
-
-            frappe.db.sql(query)
-    
-    frappe.db.commit()
-
-
-    return 'sucess'
-
 @frappe.whitelist(allow_guest=True)
 def machineAvailabilityReset():
-    machines = frappe.get_all('Gym Cardio Machines',{},{'name', 'current_status','assigned_user', 'next_available_time'})
+    machines = frappe.get_all('Gym Cardio Machines',{},{'machine_name', 'current_status','assigned_user', 'next_available_time'})
     for machine in machines:
-        name=machine.name
-        exists = frappe.db.exists('Cardio Machine Booking', {'machine_name':name})
-        today = datetime.now()
+        machine_name=machine.machine_name
+        exist = frappe.db.exists('Cardio Machine Booking', {'machine_name':machine_name})
         if machine.next_available_time:
-            
-
             machine.next_available_time= machine.next_available_time.strip()
             machine.next_available_time=datetime.strptime(machine.next_available_time,'%Y-%m-%d %H:%M:%S')
-            future = (machine.next_available_time-today).total_seconds()
+            future = (machine.next_available_time-datetime.now()).total_seconds()
         else:
             future=0
-        lastCheckUp=frappe.db.exists("Cardio Machine Booking",{'machine_name':name,'next_available_time':machine.next_available_time})
+            
+        checks=frappe.db.get_all('Cardio Machine Booking',{'machine_name':machine_name},{'stop_time'})
+        exist2=0
+        for check in checks:
+            if check.stop_time==machine.next_available_time:
+                exist2=1
 
-        if not exists or future < 0 or not lastCheckUp:
+        if not exist or exist2==0 or future<0:                   
             
             query = f"""
                 UPDATE `tabGym Cardio Machines`
                 SET current_status = 'Available',
                     assigned_user=NULL,
                 next_available_time=NULL
-                WHERE machine_name = "{name}";
+                WHERE machine_name = "{machine_name}";
             """
 
             frappe.db.sql(query)
-            
+
     frappe.db.commit()
 
-    return 
+    return
 
 @frappe.whitelist(allow_guest=True)
 def weight(email):
@@ -436,5 +340,112 @@ def weight(email):
     
     return email,today
 
+@frappe.whitelist(allow_guest=True)
+def machineAvailabity(email):
+    machines=frappe.db.get_all('Cardio Machine Booking',{'parent':email},{'start_time','stop_time','machine_name'})
+
+    for machine in machines:
+        machine_name = machine.machine_name
+        start_time=machine.start_time if machine.start_time else datetime.now
+        stop_time= machine.stop_time if machine.stop_time else datetime.now
+
+        future =(stop_time -datetime.now()).total_seconds()
+        past=(start_time-datetime.now()).total_seconds()
+
+  
+        if future >0 and past <0:
+            
+            query = f"""
+                                UPDATE `tabGym Cardio Machines`
+                                SET current_status = 'In Use',
+                                next_available_time =" {stop_time}",
+                                assigned_user = "{email}"
+                                WHERE machine_name = "{machine_name}";
+                            """
+
+            frappe.db.sql(query)
+    
+    frappe.db.commit()
+    return 
 
 
+@frappe.whitelist(allow_guest=True)
+def lockerAvailability(email):
+
+    details=frappe.db.get_all('Gym Locker Booking',{'parent':email,},{'book_date','start_time','book_end_date','end_time','locker_number'})
+    message=[]
+    for detail in details:
+        locker_number=detail.locker_number
+
+        if detail.book_date:
+            detail.book_date = datetime.strptime(str(detail.book_date), '%Y-%m-%d').date()
+            detail.book_date = datetime.combine(detail.book_date, datetime.min.time())
+
+        start_time=detail.book_date if detail.book_date else detail.start_time
+
+        if detail.book_end_date:
+            detail.book_end_date = datetime.strptime(str(detail.book_end_date), '%Y-%m-%d').date()
+            detail.book_end_date = datetime.combine(detail.book_end_date, datetime.min.time())
+      
+        stop_time=detail.book_end_date if detail.book_end_date else detail.end_time
+
+
+        future = ( stop_time-datetime.now()).total_seconds()
+        past  = (start_time-datetime.now()).total_seconds() 
+        if future>0 and past<0:
+            query = f"""
+                    UPDATE `tabGym Lockers`
+                    SET status = 'Occupied',
+                    next_available_date="{stop_time}",
+                    occupant="{email}"
+                    WHERE name = "{locker_number}";
+                """
+
+            frappe.db.sql(query)
+    frappe.db.commit()
+    return 
+
+@frappe.whitelist(allow_guest=True)
+def lockerAvailabilityReset():
+    # lockers = frappe.get_all('Gym Lockers', {}, {'name', 'status', 'occupant', 'next_available_date'})
+    # for locker in lockers:
+    #     locker_number = locker.name
+    #     exists = frappe.db.exists('Gym Locker Booking', {'locker_number': locker_number})
+
+       
+    machines = frappe.get_all('Gym Cardio Machines',{},{'machine_name', 'current_status','assigned_user', 'next_available_time'})
+    lockers = frappe.get_all('Gym Lockers', {}, {'name', 'status', 'occupant', 'next_available_date'})
+    detail=[]
+    future=0
+    sure=False
+    for locker in lockers:
+        locker_number=locker.name
+        check_bookings= frappe.db.exists('Gym Locker Booking', {'locker_number': locker_number})
+        if check_bookings and locker.next_available_date:
+            available=locker.next_available_date.strip()
+            available=datetime.strptime(locker.next_available_date,'%Y-%m-%d %H:%M:%S')
+            future=(available-datetime.now()).total_seconds()
+
+            checks=frappe.db.get_all('Gym Locker Booking',{'locker_number':locker_number},{'book_end_date','end_time'})
+            for check in checks:
+                date=check.book_end_date if check.book_end_date else check.end_time
+
+                if check.book_end_date:
+                    date=datetime.combine(date, time.min)
+                if date==available:
+                    sure=True
+        
+        if not check_bookings or future<0 or not sure:
+            query = f"""
+                    UPDATE `tabGym Lockers`
+                    SET status = 'Available',
+                    next_available_date=NULL,
+                    occupant=NULL
+                    WHERE name = "{locker_number}";
+                """
+
+            frappe.db.sql(query)
+    frappe.db.commit()
+
+
+    return 
