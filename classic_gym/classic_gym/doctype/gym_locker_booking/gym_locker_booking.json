@@ -70,7 +70,7 @@
    "fieldname": "start_time",
    "fieldtype": "Datetime",
    "label": "Start Time",
-   "mandatory_depends_on": "eval:doc.booking_type=='Per Hour';"
+   "mandatory_depends_on": "// eval:doc.booking_type=='Per Hour';"
   },
   {
    "depends_on": "eval:((doc.booking_type==\"Per Hour\") &&(doc.end_time!=null))",
@@ -82,11 +82,8 @@
    "depends_on": "eval:((doc.booking_type==\"Per Hour\") &&(doc.start_time!=null))",
    "fieldname": "end_time",
    "fieldtype": "Datetime",
-   "in_list_view": 1,
-   "in_preview": 1,
-   "in_standard_filter": 1,
    "label": "Stop Time",
-   "mandatory_depends_on": "eval:((doc.booking_type==\"Per Hour\") &&(doc.start_time!=null))"
+   "mandatory_depends_on": "// eval:((doc.booking_type==\"Per Hour\") &&(doc.start_time!=null))"
   },
   {
    "fieldname": "locker_number",
@@ -110,7 +107,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-03-05 07:44:48.521856",
+ "modified": "2024-03-11 09:10:52.349430",
  "modified_by": "Administrator",
  "module": "Classic Gym",
  "name": "Gym Locker Booking",

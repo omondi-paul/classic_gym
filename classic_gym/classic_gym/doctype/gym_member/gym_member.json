@@ -90,7 +90,8 @@
   {
    "fieldname": "contact",
    "fieldtype": "Phone",
-   "label": "Contact"
+   "label": "Contact",
+   "reqd": 1
   },
   {
    "fieldname": "emergency_contact",
@@ -272,12 +273,13 @@
   {
    "fieldname": "date_of_birth",
    "fieldtype": "Date",
-   "label": "Date of Birth"
+   "label": "Date of Birth",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-03-02 18:08:31.064116",
+ "modified": "2024-03-10 16:40:54.750464",
  "modified_by": "Administrator",
  "module": "Classic Gym",
  "name": "Gym Member",

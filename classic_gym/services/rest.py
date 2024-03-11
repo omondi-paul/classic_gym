@@ -19,6 +19,7 @@ class GymMember():
 
     def calculateDays(self,membership,membership_date):
         days=1
+        remaining_days=0
         for type in self.membershipType:
             subscription = type.type
             if subscription==membership:
@@ -258,21 +259,14 @@ class GymLockerBooking():
         # Convert the difference to hours
         hours_difference = time_difference.total_seconds() / 3600
     
-        return hours_difference
-    
-   
-       
-         
-   
+        return hours_difference 
 
 locker = GymLockerBooking()
+
 @frappe.whitelist(allow_guest=True)
 def booking(email):
 
     return email
-
-
-    
 
 @frappe.whitelist(allow_guest=True)
 def endDate(startDate_str,number_of_days):
@@ -407,15 +401,7 @@ def lockerAvailability(email):
 
 @frappe.whitelist(allow_guest=True)
 def lockerAvailabilityReset():
-    # lockers = frappe.get_all('Gym Lockers', {}, {'name', 'status', 'occupant', 'next_available_date'})
-    # for locker in lockers:
-    #     locker_number = locker.name
-    #     exists = frappe.db.exists('Gym Locker Booking', {'locker_number': locker_number})
-
-       
-    machines = frappe.get_all('Gym Cardio Machines',{},{'machine_name', 'current_status','assigned_user', 'next_available_time'})
     lockers = frappe.get_all('Gym Lockers', {}, {'name', 'status', 'occupant', 'next_available_date'})
-    detail=[]
     future=0
     sure=False
     for locker in lockers:
@@ -449,3 +435,7 @@ def lockerAvailabilityReset():
 
 
     return 
+
+
+# http://127.0.0.1:8001/api/method/classic_gym.classic_gym.services.rest.customInvoice
+

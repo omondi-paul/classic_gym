@@ -2,6 +2,7 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Gym Member', {
+    
     onload: function (frm) {
         frm.set_query('locker_number', 'locker', () => {
             return {
@@ -20,6 +21,7 @@ frappe.ui.form.on('Gym Member', {
     },
     email: function (frm) {
         let email = frm.doc.email;
+     
         frappe.call({
             method: 'classic_gym.services.rest.check_email',
             args: {
@@ -38,7 +40,21 @@ frappe.ui.form.on('Gym Member', {
     },
     validate: function (frm) {
         let dateOfBirth=frm.doc.date_of_birth;
-        let email=frm.doc.email
+        let email=frm.doc.email;
+        let full_name=frm.doc.full_name;
+        let contact=frm.doc.contact
+        frappe.call({
+            method: 'classic_gym.classic_gym.doctype.gym_member.gym_member.customerInvoice',
+            args: {
+                'full_name':full_name,
+                'email':email,
+                'contact':contact
+            },
+            callback: function (r) {
+            }
+        });
+
+
         frappe.call({
             method: 'classic_gym.services.rest.calculate_age',
             args: {
@@ -79,7 +95,7 @@ frappe.ui.form.on('Gym Member', {
                 }
             },
             error: function(err) {
-                console.error("Error occurred during frappe.call:", err);
+                // console.error("Error occurred during frappe.call:", err);
               
             }
         });

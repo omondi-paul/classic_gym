@@ -4,7 +4,7 @@
 frappe.ui.form.on('Gym Lockers', {
     refresh: function (frm) {
         frappe.call({
-            method: 'classic_gym.services.rest.availabilityReset',
+            method: 'classic_gym.services.rest.lockerAvailabilityReset',
             args: {
 
             },
