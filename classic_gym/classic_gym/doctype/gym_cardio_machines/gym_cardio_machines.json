@@ -60,7 +60,8 @@
   {
    "fieldname": "serial_number",
    "fieldtype": "Data",
-   "label": "Serial Number"
+   "label": "Serial Number",
+   "reqd": 1
   },
   {
    "fieldname": "location",
@@ -147,7 +148,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-02-27 17:28:13.505768",
+ "modified": "2024-03-12 11:41:38.202982",
  "modified_by": "Administrator",
  "module": "Classic Gym",
  "name": "Gym Cardio Machines",

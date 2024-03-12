@@ -435,7 +435,9 @@ def lockerAvailabilityReset():
 
 
     return 
-
-
+@frappe.whitelist(allow_guest=True)
+def gymMachinestype():
+    gym_machines = frappe.get_all("Gym Cardio Machines",{},{"machine_name","name"})
+    return gym_machines
 # http://127.0.0.1:8001/api/method/classic_gym.classic_gym.services.rest.customInvoice
 

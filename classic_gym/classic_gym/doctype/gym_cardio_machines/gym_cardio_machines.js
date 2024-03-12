@@ -14,6 +14,23 @@ frappe.ui.form.on('Gym Cardio Machines', {
            
         });
 
-	}
-});
+	},
+    validate: function (frm) {
+  
+        frappe.call({
+            method: 'classic_gym.classic_gym.doctype.gym_cardio_machines.gym_cardio_machines.gym_machines_items',
+            args: {
+             
+            },
+            callback: function (r) {
+                console.log(r.message)
+            }
+        });
+
+    },
+   
+    });
+        
+
+
 

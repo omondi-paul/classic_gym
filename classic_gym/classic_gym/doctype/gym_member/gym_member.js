@@ -28,6 +28,8 @@ frappe.ui.form.on('Gym Member', {
                 'email': email
             },
             callback: function (r) {
+
+                
                 if (r.message) {
                     frappe.msgprint('This email already exists.');
                     frappe.validate = false;
@@ -43,12 +45,14 @@ frappe.ui.form.on('Gym Member', {
         let email=frm.doc.email;
         let full_name=frm.doc.full_name;
         let contact=frm.doc.contact
+        let membership_type=frm.doc.membership_type || null
         frappe.call({
             method: 'classic_gym.classic_gym.doctype.gym_member.gym_member.customerInvoice',
             args: {
                 'full_name':full_name,
                 'email':email,
-                'contact':contact
+                'contact':contact,
+                'membership_type':membership_type
             },
             callback: function (r) {
             }
@@ -209,6 +213,18 @@ frappe.ui.form.on('Gym Member', {
                 },
                 error: function (err) {
                 //    console.error("Error calling totalCharges function:", err);
+                }
+            });
+            frappe.call({
+                method: 'classic_gym.services.rest.booking',
+                args: {
+                    "email": email,
+
+                },
+                callback: function (r) {
+                    if (r.message) {
+                        frm.set_value('title', r.message);
+                    }
                 }
             });
             frappe.call({
